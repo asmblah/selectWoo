@@ -5641,7 +5641,8 @@ S2.define('select2/core',[
             self.focusOnActiveElement();
         } else {
           // Focus on the search if user starts typing.
-          $searchField.trigger('focus');
+          $searchField[0].focus();
+
           // Focus back to active selection when finished typing.
           // Small delay so typed character can be read by screen reader.
           setTimeout(function(){
