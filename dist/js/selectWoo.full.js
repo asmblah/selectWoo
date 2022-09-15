@@ -799,8 +799,23 @@ S2.define('select2/results',[
   Utils.Extend(Results, Utils.Observable);
 
   Results.prototype.render = function () {
+    var label = this.options.get('label');
+    var ariaLabelAttr = '';
+
+    // If a label is passed via options,
+    // set aria label on the results UL as
+    // role="listbox" must have an accessible name
+    if (label) {
+      ariaLabelAttr = 'aria-label ="' + label + '"';
+    }
+
     var $results = $(
-      '<ul class="select2-results__options" role="listbox" tabindex="-1"></ul>'
+      '<ul' +
+      'class="select2-results__options" ' +
+      'role="listbox" ' +
+      'tabindex="-1" ' +
+       ariaLabelAttr +
+      '></ul>'
     );
 
     if (this.options.get('multiple')) {
@@ -959,6 +974,7 @@ S2.define('select2/results',[
     var attrs = {
       'role': 'option',
       'data-selected': 'false',
+      'aria-selected': 'false',
       'tabindex': -1
     };
 
@@ -1549,20 +1565,20 @@ S2.define('select2/selection/single',[
       .attr('aria-readonly', 'true');
 
     if (placeholder) {
-      // role="textbox" requires a text label 
+      // role="textbox" requires a text label
       // not needed when placeholder absent as first option is selected
       this.$selection.find('.select2-selection__rendered')
         .attr('aria-label', placeholder);
 
       if (label) {
-        // role=combobox requires a label 
-        // we're adding the label and placeholder here 
+        // role=combobox requires a label
+        // we're adding the label and placeholder here
         // so they both get announced
         this.$selection.attr('aria-label', label + ', ' + placeholder);
       }
     }
 
-    // If element is disabled, 
+    // If element is disabled,
     // add aria-disabled to rendered element for screen readers
     if (this.container.$element.attr('disabled')) {
       this.$selection.find('.select2-selection__rendered')
@@ -1641,7 +1657,7 @@ S2.define('select2/selection/single',[
     var formatted = this.display(selection, $rendered);
 
     $rendered.empty().append(formatted);
-    
+
     // Update aria-label with selected option (role="textbox" requires a label)
     $rendered.attr('aria-label', selection.title || selection.text);
 
@@ -1650,8 +1666,8 @@ S2.define('select2/selection/single',[
     var placeholder = this.options.get('placeholder');
 
     // selection has role="combobox" and therefore requires a label
-    // but adding just the label results in only the label being read 
-    // and not the selection/placeholder (in JAWS & NVDA) 
+    // but adding just the label results in only the label being read
+    // and not the selection/placeholder (in JAWS & NVDA)
     // so we add the label and the selection/placeholder
     if (label) {
       this.$selection.attr('aria-label', label + ', ' + selectedValueText);
@@ -1677,6 +1693,9 @@ S2.define('select2/selection/multiple',[
   MultipleSelection.prototype.render = function () {
     var $selection = MultipleSelection.__super__.render.call(this);
 
+    // Add combo box role, needed due to aria-expanded use
+    $selection.attr('role', 'combobox');
+
     $selection.addClass('select2-selection--multiple');
     $selection.html(
       '<ul class="select2-selection__rendered" ' +
@@ -1690,13 +1709,30 @@ S2.define('select2/selection/multiple',[
 
   MultipleSelection.prototype.bind = function (container, $container) {
     var self = this;
+    var resultsId = container.id + '-results';
+    var label = this.options.get('label');
 
     MultipleSelection.__super__.bind.apply(this, arguments);
+
+    if (label) {
+      // role="combobox" requires a label
+      this.$selection.attr('aria-label', label);
+    }
 
     this.$selection.on('click', function (evt) {
       self.trigger('toggle', {
         originalEvent: evt
       });
+    });
+
+    // Add and remove aria-controls to/from selection
+    // when shown (in dom) and removed (not in dom)
+    container.on('open', function () {
+      self.$selection.attr('aria-controls', resultsId);
+    });
+
+    container.on('close', function () {
+      self.$selection.removeAttr('aria-controls');
     });
 
     this.$selection.on(
@@ -1974,7 +2010,8 @@ S2.define('select2/selection/search',[
     var ariaLabelAttr = '';
 
     // If a label is passed via options,
-    // set aria label on multiple select search for screen readers
+    // set aria label on the search input as
+    // inputs must have an accessible name
     if (label) {
       ariaLabelAttr = 'aria-label ="' + label + '"';
     }
@@ -1984,7 +2021,7 @@ S2.define('select2/selection/search',[
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
         ' spellcheck="false" role="textbox" aria-autocomplete="list" ' +
-        ariaLabelAttr + '/>' +
+        ariaLabelAttr +' />' +
       '</li>'
     );
 
@@ -4138,13 +4175,22 @@ S2.define('select2/dropdown/search',[
 
   Search.prototype.render = function (decorated) {
     var $rendered = decorated.call(this);
+    var label = this.options.get('label');
+    var ariaLabelAttr = '';
+
+    // If a label is passed via options,
+    // set aria label on the dropdown search
+    // role="combobox" must have an accessible name
+    if (label) {
+      ariaLabelAttr = 'aria-label ="' + label + '"';
+    }
 
     var $search = $(
       '<span class="select2-search select2-search--dropdown">' +
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
         ' spellcheck="false" role="combobox" aria-autocomplete="list" ' +
-        'aria-expanded="true" />' +
+        'aria-expanded="true" ' + ariaLabelAttr + '/>' +
       '</span>'
     );
 
@@ -4182,6 +4228,7 @@ S2.define('select2/dropdown/search',[
 
     container.on('open', function () {
       self.$search.attr('tabindex', 0);
+      self.$search.attr('aria-controls', resultsId);
       self.$search.trigger('focus');
 
       window.setTimeout(function () {
@@ -4191,6 +4238,7 @@ S2.define('select2/dropdown/search',[
 
     container.on('close', function () {
       self.$search.attr('tabindex', -1);
+      self.$search.removeAttr('aria-controls');
       self.$search.removeAttr('aria-activedescendant');
       self.$search.val('');
     });
@@ -5665,7 +5713,6 @@ S2.define('select2/core',[
         } else {
           // Focus on the search if user starts typing.
           $searchField[0].focus();
-
           // Focus back to active selection when finished typing.
           // Small delay so typed character can be read by screen reader.
           setTimeout(function(){
