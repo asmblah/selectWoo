@@ -12,7 +12,8 @@ define([
     var ariaLabelAttr = '';
 
     // If a label is passed via options,
-    // set aria label on multiple select search for screen readers
+    // set aria label on the search input as
+    // inputs must have an accessible name
     if (label) {
       ariaLabelAttr = 'aria-label ="' + label + '"';
     }
@@ -22,7 +23,7 @@ define([
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
         ' spellcheck="false" role="textbox" aria-autocomplete="list" ' +
-        ariaLabelAttr + '/>' +
+        ariaLabelAttr +' />' +
       '</li>'
     );
 

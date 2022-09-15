@@ -13,8 +13,23 @@ define([
   Utils.Extend(Results, Utils.Observable);
 
   Results.prototype.render = function () {
+    var label = this.options.get('label');
+    var ariaLabelAttr = '';
+
+    // If a label is passed via options,
+    // set aria label on the results UL as
+    // role="listbox" must have an accessible name
+    if (label) {
+      ariaLabelAttr = 'aria-label ="' + label + '"';
+    }
+
     var $results = $(
-      '<ul class="select2-results__options" role="listbox" tabindex="-1"></ul>'
+      '<ul' +
+      'class="select2-results__options" ' +
+      'role="listbox" ' +
+      'tabindex="-1" ' +
+       ariaLabelAttr +
+      '></ul>'
     );
 
     if (this.options.get('multiple')) {
@@ -173,6 +188,7 @@ define([
     var attrs = {
       'role': 'option',
       'data-selected': 'false',
+      'aria-selected': 'false',
       'tabindex': -1
     };
 

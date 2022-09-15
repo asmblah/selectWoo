@@ -40,20 +40,20 @@ define([
       .attr('aria-readonly', 'true');
 
     if (placeholder) {
-      // role="textbox" requires a text label 
+      // role="textbox" requires a text label
       // not needed when placeholder absent as first option is selected
       this.$selection.find('.select2-selection__rendered')
         .attr('aria-label', placeholder);
 
       if (label) {
-        // role=combobox requires a label 
-        // we're adding the label and placeholder here 
+        // role=combobox requires a label
+        // we're adding the label and placeholder here
         // so they both get announced
         this.$selection.attr('aria-label', label + ', ' + placeholder);
       }
     }
 
-    // If element is disabled, 
+    // If element is disabled,
     // add aria-disabled to rendered element for screen readers
     if (this.container.$element.attr('disabled')) {
       this.$selection.find('.select2-selection__rendered')
@@ -132,7 +132,7 @@ define([
     var formatted = this.display(selection, $rendered);
 
     $rendered.empty().append(formatted);
-    
+
     // Update aria-label with selected option (role="textbox" requires a label)
     $rendered.attr('aria-label', selection.title || selection.text);
 
@@ -141,8 +141,8 @@ define([
     var placeholder = this.options.get('placeholder');
 
     // selection has role="combobox" and therefore requires a label
-    // but adding just the label results in only the label being read 
-    // and not the selection/placeholder (in JAWS & NVDA) 
+    // but adding just the label results in only the label being read
+    // and not the selection/placeholder (in JAWS & NVDA)
     // so we add the label and the selection/placeholder
     if (label) {
       this.$selection.attr('aria-label', label + ', ' + selectedValueText);

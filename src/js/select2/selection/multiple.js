@@ -12,6 +12,9 @@ define([
   MultipleSelection.prototype.render = function () {
     var $selection = MultipleSelection.__super__.render.call(this);
 
+    // Add combo box role, needed due to aria-expanded use
+    $selection.attr('role', 'combobox');
+
     $selection.addClass('select2-selection--multiple');
     $selection.html(
       '<ul class="select2-selection__rendered" ' +
@@ -25,13 +28,30 @@ define([
 
   MultipleSelection.prototype.bind = function (container, $container) {
     var self = this;
+    var resultsId = container.id + '-results';
+    var label = this.options.get('label');
 
     MultipleSelection.__super__.bind.apply(this, arguments);
+
+    if (label) {
+      // role="combobox" requires a label
+      this.$selection.attr('aria-label', label);
+    }
 
     this.$selection.on('click', function (evt) {
       self.trigger('toggle', {
         originalEvent: evt
       });
+    });
+
+    // Add and remove aria-controls to/from selection
+    // when shown (in dom) and removed (not in dom)
+    container.on('open', function () {
+      self.$selection.attr('aria-controls', resultsId);
+    });
+
+    container.on('close', function () {
+      self.$selection.removeAttr('aria-controls');
     });
 
     this.$selection.on(
