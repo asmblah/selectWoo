@@ -810,7 +810,7 @@ S2.define('select2/results',[
     }
 
     var $results = $(
-      '<ul' +
+      '<ul ' +
       'class="select2-results__options" ' +
       'role="listbox" ' +
       'tabindex="-1" ' +
@@ -1371,9 +1371,7 @@ S2.define('select2/selection/base',[
 
   BaseSelection.prototype.render = function () {
     var $selection = $(
-      '<span class="select2-selection" ' +
-      ' aria-haspopup="true" aria-expanded="false">' +
-      '</span>'
+      '<span class="select2-selection"></span>'
     );
 
     this._tabindex = 0;
@@ -1417,25 +1415,15 @@ S2.define('select2/selection/base',[
       }
     });
 
-    container.on('results:focus', function (params) {
-      self.$selection.attr('aria-activedescendant', params.data._resultId);
-    });
-
     container.on('selection:update', function (params) {
       self.update(params.data);
     });
 
     container.on('open', function () {
-      // When the dropdown is open, aria-expanded="true"
-      self.$selection.attr('aria-expanded', 'true');
       self._attachCloseHandler(container);
     });
 
     container.on('close', function () {
-      // When the dropdown is closed, aria-expanded="false"
-      self.$selection.attr('aria-expanded', 'false');
-      self.$selection.removeAttr('aria-activedescendant');
-
       // This needs to be delayed as the active element is the body when the
       // key is pressed.
       window.setTimeout(function () {
@@ -1585,12 +1573,10 @@ S2.define('select2/selection/single',[
         .attr('aria-disabled', 'true');
     }
 
-    // This makes single selects work in screen readers.
-    // ARIA 1.1 states combobox should also have aria-controls and aria-owns.
-    // https://www.w3.org/TR/wai-aria-1.1/#combobox
     this.$selection.attr('role', 'combobox');
     this.$selection.attr('aria-controls', id);
     this.$selection.attr('aria-owns', id);
+    this.$selection.attr('aria-expanded', 'false');
 
     this.$selection.on('mousedown', function (evt) {
       // Only respond to left clicks
@@ -1619,10 +1605,26 @@ S2.define('select2/selection/single',[
       // User exits the container
     });
 
+    container.on('open', function () {
+      // When the dropdown is open, aria-expanded="true"
+      self.$selection.attr('aria-expanded', 'true');
+    });
+
+    container.on('close', function () {
+      // When the dropdown is open, aria-expanded="false"
+      self.$selection.attr('aria-expanded', 'false');
+
+      self.$selection.removeAttr('aria-activedescendant');
+    });
+
     container.on('focus', function (evt) {
       if (!container.isOpen()) {
         self.$selection.trigger('focus');
       }
+    });
+
+    container.on('results:focus', function (params) {
+      self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
 
     container.on('selection:update', function (params) {
@@ -1693,9 +1695,6 @@ S2.define('select2/selection/multiple',[
   MultipleSelection.prototype.render = function () {
     var $selection = MultipleSelection.__super__.render.call(this);
 
-    // Add combo box role, needed due to aria-expanded use
-    $selection.attr('role', 'combobox');
-
     $selection.addClass('select2-selection--multiple');
     $selection.html(
       '<ul class="select2-selection__rendered" ' +
@@ -1714,25 +1713,10 @@ S2.define('select2/selection/multiple',[
 
     MultipleSelection.__super__.bind.apply(this, arguments);
 
-    if (label) {
-      // role="combobox" requires a label
-      this.$selection.attr('aria-label', label);
-    }
-
     this.$selection.on('click', function (evt) {
       self.trigger('toggle', {
         originalEvent: evt
       });
-    });
-
-    // Add and remove aria-controls to/from selection
-    // when shown (in dom) and removed (not in dom)
-    container.on('open', function () {
-      self.$selection.attr('aria-controls', resultsId);
-    });
-
-    container.on('close', function () {
-      self.$selection.removeAttr('aria-controls');
     });
 
     this.$selection.on(
@@ -2020,7 +2004,8 @@ S2.define('select2/selection/search',[
       '<li class="select2-search select2-search--inline">' +
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-        ' spellcheck="false" role="textbox" aria-autocomplete="list" ' +
+        ' spellcheck="false" role="combobox" aria-autocomplete="list" ' +
+        ' aria-expanded="false"' +
         ariaLabelAttr +' />' +
       '</li>'
     );
@@ -2043,12 +2028,17 @@ S2.define('select2/selection/search',[
 
     container.on('open', function () {
       self.$search.trigger('focus');
+      self.$search
+        .attr('aria-controls', resultsId)
+        .attr('aria-expanded', 'true');
     });
 
     container.on('close', function () {
-      self.$search.val('');
-      self.$search.removeAttr('aria-activedescendant');
-      self.$search.trigger('focus');
+      self.$search
+        .val('')
+        .removeAttr('aria-controls aria-activedescendant')
+        .trigger('focus')
+        .attr('aria-expanded', 'false');
     });
 
     container.on('enable', function () {
