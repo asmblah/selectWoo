@@ -24,7 +24,7 @@ define([
     }
 
     var $results = $(
-      '<ul' +
+      '<ul ' +
       'class="select2-results__options" ' +
       'role="listbox" ' +
       'tabindex="-1" ' +
