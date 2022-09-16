@@ -1708,8 +1708,6 @@ S2.define('select2/selection/multiple',[
 
   MultipleSelection.prototype.bind = function (container, $container) {
     var self = this;
-    var resultsId = container.id + '-results';
-    var label = this.options.get('label');
 
     MultipleSelection.__super__.bind.apply(this, arguments);
 
