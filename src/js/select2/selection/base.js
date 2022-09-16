@@ -14,9 +14,7 @@ define([
 
   BaseSelection.prototype.render = function () {
     var $selection = $(
-      '<span class="select2-selection" ' +
-      ' aria-haspopup="true" aria-expanded="false">' +
-      '</span>'
+      '<span class="select2-selection"></span>'
     );
 
     this._tabindex = 0;
@@ -60,25 +58,15 @@ define([
       }
     });
 
-    container.on('results:focus', function (params) {
-      self.$selection.attr('aria-activedescendant', params.data._resultId);
-    });
-
     container.on('selection:update', function (params) {
       self.update(params.data);
     });
 
     container.on('open', function () {
-      // When the dropdown is open, aria-expanded="true"
-      self.$selection.attr('aria-expanded', 'true');
       self._attachCloseHandler(container);
     });
 
     container.on('close', function () {
-      // When the dropdown is closed, aria-expanded="false"
-      self.$selection.attr('aria-expanded', 'false');
-      self.$selection.removeAttr('aria-activedescendant');
-
       // This needs to be delayed as the active element is the body when the
       // key is pressed.
       window.setTimeout(function () {

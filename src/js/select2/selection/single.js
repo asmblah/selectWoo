@@ -60,12 +60,10 @@ define([
         .attr('aria-disabled', 'true');
     }
 
-    // This makes single selects work in screen readers.
-    // ARIA 1.1 states combobox should also have aria-controls and aria-owns.
-    // https://www.w3.org/TR/wai-aria-1.1/#combobox
     this.$selection.attr('role', 'combobox');
     this.$selection.attr('aria-controls', id);
     this.$selection.attr('aria-owns', id);
+    this.$selection.attr('aria-expanded', 'false');
 
     this.$selection.on('mousedown', function (evt) {
       // Only respond to left clicks
@@ -94,10 +92,26 @@ define([
       // User exits the container
     });
 
+    container.on('open', function () {
+      // When the dropdown is open, aria-expanded="true"
+      self.$selection.attr('aria-expanded', 'true');
+    });
+
+    container.on('close', function () {
+      // When the dropdown is open, aria-expanded="false"
+      self.$selection.attr('aria-expanded', 'false');
+
+      self.$selection.removeAttr('aria-activedescendant');
+    });
+
     container.on('focus', function (evt) {
       if (!container.isOpen()) {
         self.$selection.trigger('focus');
       }
+    });
+
+    container.on('results:focus', function (params) {
+      self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
 
     container.on('selection:update', function (params) {
