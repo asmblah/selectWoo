@@ -83,7 +83,7 @@ Typical screen reader output:
 
 ## Known issues
 
-* Voiceover reads the the selection twice, once before the labe and once after. It's caused by VO reading the `aria-label` on the `span.select2-selection` combobox and the text value of `span.select2-selection__rendered` textbox. Currently there is no way to prevent this as both values are required for maximum screen reader support.
+* Voiceover reads the the selection twice, once before the label and once after. It's caused by VO reading the `aria-label` on the `span.select2-selection` combobox and the text value of `span.select2-selection__rendered` textbox. Currently there is no way to prevent this as both values are required for maximum screen reader support.
 
-* IBM Equal Access Accessibility Checker report a 4.1.2 Name, Role Value error relating to single selects having a `aria-expanded` value of `false` while the combobox popup is visible. This is due to the markup structure of single selects, where the parent "selection" controls the child "selection rendered" and the child is always visible (the selected option or placeholder). This appears to cause no issues in real world screen reader testing (see above tables).
+* IBM Equal Access Accessibility Checker reports a 4.1.2 Name, Role Value error relating to single selects having a `aria-expanded` value of `false` while the combobox popup is visible. This is due to the markup structure of single selects, where the parent "selection" controls the child "selection rendered" and the child is always visible (the selected option or placeholder). This appears to cause no issues in real world screen reader testing (see above tables).
 
