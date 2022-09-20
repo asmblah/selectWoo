@@ -806,7 +806,7 @@ S2.define('select2/results',[
     // set aria label on the results UL as
     // role="listbox" must have an accessible name
     if (label) {
-      ariaLabelAttr = 'aria-label ="' + label + '"';
+      ariaLabelAttr = 'aria-label="' + label + '"';
     }
 
     var $results = $(
@@ -814,7 +814,7 @@ S2.define('select2/results',[
       'class="select2-results__options" ' +
       'role="listbox" ' +
       'tabindex="-1" ' +
-       ariaLabelAttr +
+      ariaLabelAttr +
       '></ul>'
     );
 
@@ -2002,7 +2002,7 @@ S2.define('select2/selection/search',[
       '<li class="select2-search select2-search--inline">' +
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-        ' spellcheck="false" role="combobox" aria-autocomplete="list" ' +
+        ' spellcheck="false" role="combobox" aria-autocomplete="list"' +
         ' aria-expanded="false"' +
         ariaLabelAttr +' />' +
       '</li>'
