@@ -22,7 +22,7 @@ define([
       '<li class="select2-search select2-search--inline">' +
         '<input class="select2-search__field" type="text" tabindex="-1"' +
         ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
-        ' spellcheck="false" role="combobox" aria-autocomplete="list" ' +
+        ' spellcheck="false" role="combobox" aria-autocomplete="list"' +
         ' aria-expanded="false"' +
         ariaLabelAttr +' />' +
       '</li>'

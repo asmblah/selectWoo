@@ -20,7 +20,7 @@ define([
     // set aria label on the results UL as
     // role="listbox" must have an accessible name
     if (label) {
-      ariaLabelAttr = 'aria-label ="' + label + '"';
+      ariaLabelAttr = 'aria-label="' + label + '"';
     }
 
     var $results = $(
@@ -28,7 +28,7 @@ define([
       'class="select2-results__options" ' +
       'role="listbox" ' +
       'tabindex="-1" ' +
-       ariaLabelAttr +
+      ariaLabelAttr +
       '></ul>'
     );
 
