@@ -2,7 +2,7 @@ selectWoo
 =======
 This fork of selectWoo contains additional accessibility and screenreader fixes, above those found in [woocommerce/selectWoo](https://github.com/woocommerce/selectWoo).
 
-**Usage**: 
+**Usage**:
 
 [Usage is the same as select2](https://select2.github.io/examples.html), but can also be initialized with `.selectWoo()`. `.select2()` initialization has been kept for full backwards compatibility. If other versions of select2 are potentially going to be running on the same site, initializing elements with `.selectWoo()` is recommended.
 
@@ -52,7 +52,7 @@ Typical screen reader output:
 | NVDA          | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
 | NVDA          | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
 | NVDA          | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
-| NVDA          | Win 7  | IE11    | Yes        | Yes            | No           | No               |
+| NVDA          | Win 7  | IE11    | Yes        | Yes            | Yes          | Yes              |
 | JAWS 2020     | Win 10 | Edge    | Yes        | Yes            | Yes          | No               |
 | JAWS 2020     | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
 | JAWS 2020     | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
@@ -74,7 +74,7 @@ Typical screen reader output:
 | NVDA          | Win 10 | IE11    | Yes        | Yes            | Yes          | No               |
 | NVDA          | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
 | NVDA          | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
-| NVDA          | Win 7  | IE11    | Yes        | Yes            | No           | No               |
+| NVDA          | Win 7  | IE11    | Yes        | Yes            | Yes          | No               |
 | JAWS 2020     | Win 10 | Edge    | Yes        | No             | Yes          | No               |
 | JAWS 2020     | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
 | JAWS 2020     | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
@@ -83,7 +83,7 @@ Typical screen reader output:
 
 ## Known issues
 
-* Voiceover reads the the selection twice, once before the labe and once after. It's caused by VO reading the `aria-label` on the `span.select2-selection` combobox and the text value of `span.select2-selection__rendered` textbox. Currently there is no way to prevent this as both values are required.
+* Voiceover reads the the selection twice, once before the label and once after. It's caused by VO reading the `aria-label` on the `span.select2-selection` combobox and the text value of `span.select2-selection__rendered` textbox. Currently there is no way to prevent this as both values are required for maximum screen reader support.
 
-* Site Improve reports the error "Element not highlighted on focus" on multi selects. This is due to the focus styling being applied to the parent `span.select2-selection` and not the barely visible `input.select2-search__field`. Currently there is no way to resolve this.
+* IBM Equal Access Accessibility Checker reports a 4.1.2 Name, Role Value error relating to single selects having a `aria-expanded` value of `false` while the combobox popup is visible. This is due to the markup structure of single selects, where the parent "selection" controls the child "selection rendered" and the child is always visible (the selected option or placeholder). This appears to cause no issues in real world screen reader testing (see above tables).
 

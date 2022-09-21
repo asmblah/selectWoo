@@ -22,44 +22,6 @@ test('title is carried over from original element', function (assert) {
   );
 });
 
-test('aria-expanded reflects the state of the container', function (assert) {
-  var $select = $('#qunit-fixture .single');
-
-  var selection = new BaseSelection($select, options);
-  var $selection = selection.render();
-
-  var container = new MockContainer();
-
-  selection.bind(container, $('<span></span>'));
-
-  assert.equal(
-    $selection.attr('aria-expanded'),
-    'false',
-    'The container should not be expanded when it is closed'
-  );
-
-  container.trigger('open');
-
-  assert.equal(
-    $selection.attr('aria-expanded'),
-    'true',
-    'The container should be expanded when it is opened'
-  );
-});
-
-test('static aria attributes are present', function (assert) {
-  var $select = $('#qunit-fixture .single');
-
-  var selection = new BaseSelection($select, options);
-  var $selection = selection.render();
-
-  assert.equal(
-    $selection.attr('aria-haspopup'),
-    'true',
-    'The dropdown is considered a popup of the container'
-  );
-});
-
 test('the container should be in the tab order', function (assert) {
   var $select = $('#qunit-fixture .single');
 

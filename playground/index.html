@@ -2,14 +2,14 @@
 <html lang="en">
 <head>
     <title>SelectWoo</title>
-    <link rel="stylesheet" href="css/select2.css" type="text/css" />
+    <link rel="stylesheet" href="../dist/css/select2.css" type="text/css" />
     <meta charset="utf-8">
 
     <!-- <script src="jquery-3.4.1.js"></script> -->
     <!-- Test with 3.6.0 due to focus fix introduced in 3.6.0 -->
     <script src="https://code.jquery.com/jquery-3.6.0.js"></script>
 
-    <script src="js/select2.full.js"></script>
+    <script src="../dist/js/select2.full.js"></script>
 
     <script>
         $(document).ready(function() {
@@ -121,6 +121,22 @@
         <hr/>
 
         <h2>Multiple selection</h2>
+
+        <h3>Native select</h3>
+        <label for="example-native">Select users</label>
+        <select id="example-native" name="example-native">
+            <option value="bob">Bob</option>
+            <option value="sally">Sally</option>
+            <option value="fred">Fred</option>
+        </select>
+
+        <h3>Native select (multiple)</h3>
+        <label for="example-native-multiple">Select users</label>
+        <select id="example-native-multiple" name="example-native-multiple" multiple>
+            <option value="bob">Bob</option>
+            <option value="sally">Sally</option>
+            <option value="fred">Fred</option>
+        </select>
 
         <h3>Multiple selection (no placeholder)</h3>
         <label for="example-7">Select users</label>
