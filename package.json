@@ -43,7 +43,7 @@
     "src",
     "dist"
   ],
-  "version": "jadu-1.2.0",
+  "version": "4.1.0+select2-4.0.6",
   "jspm": {
     "main": "js/select2",
     "directories": {
