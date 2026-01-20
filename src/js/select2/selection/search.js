@@ -8,11 +8,23 @@ define([
   }
 
   Search.prototype.render = function (decorated) {
+    var label = this.options.get('label');
+    var ariaLabelAttr = '';
+
+    // If a label is passed via options,
+    // set aria label on the search input as
+    // inputs must have an accessible name
+    if (label) {
+      ariaLabelAttr = 'aria-label ="' + label + '"';
+    }
+
     var $search = $(
       '<li class="select2-search select2-search--inline">' +
-        '<input class="select2-search__field" type="search" tabindex="-1"' +
-        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
-        ' spellcheck="false" role="textbox" aria-autocomplete="list" />' +
+        '<input class="select2-search__field" type="text" tabindex="-1"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
+        ' spellcheck="false" role="combobox" aria-autocomplete="list"' +
+        ' aria-expanded="false"' +
+        ariaLabelAttr +' />' +
       '</li>'
     );
 
@@ -28,17 +40,23 @@ define([
 
   Search.prototype.bind = function (decorated, container, $container) {
     var self = this;
+    var resultsId = container.id + '-results';
 
     decorated.call(this, container, $container);
 
     container.on('open', function () {
       self.$search.trigger('focus');
+      self.$search
+        .attr('aria-controls', resultsId)
+        .attr('aria-expanded', 'true');
     });
 
     container.on('close', function () {
-      self.$search.val('');
-      self.$search.removeAttr('aria-activedescendant');
-      self.$search.trigger('focus');
+      self.$search
+        .val('')
+        .removeAttr('aria-controls aria-activedescendant')
+        .trigger('focus')
+        .attr('aria-expanded', 'false');
     });
 
     container.on('enable', function () {
@@ -56,7 +74,7 @@ define([
     });
 
     container.on('results:focus', function (params) {
-      self.$search.attr('aria-activedescendant', params.id);
+      self.$search.attr('aria-activedescendant', params.data._resultId);
     });
 
     this.$selection.on('focusin', '.select2-search--inline', function (evt) {
@@ -87,6 +105,9 @@ define([
 
           evt.preventDefault();
         }
+      } else if (evt.which === KEYS.ENTER) {
+        container.open();
+        evt.preventDefault();
       }
     });
 
@@ -176,11 +197,12 @@ define([
     this.resizeSearch();
     if (searchHadFocus) {
       var isTagInput = this.$element.find('[data-select2-tag]').length;
+
       if (isTagInput) {
         // fix IE11 bug where tag input lost focus
-        this.$element.focus();
+        this.$element.trigger('focus');
       } else {
-        this.$search.focus();
+        this.$search.trigger('focus');
       }
     }
   };

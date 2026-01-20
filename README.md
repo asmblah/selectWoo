@@ -1,131 +1,89 @@
-Select2
+selectWoo
 =======
-[![Build Status][travis-ci-image]][travis-ci-status]
-[![cdnjs](https://img.shields.io/cdnjs/v/select2.svg)](https://cdnjs.com/libraries/select2)
-[![jsdelivr](https://data.jsdelivr.com/v1/package/npm/select2/badge)](https://www.jsdelivr.com/package/npm/select2)
+This fork of selectWoo contains additional accessibility and screenreader fixes, above those found in [woocommerce/selectWoo](https://github.com/woocommerce/selectWoo).
 
-Select2 is a jQuery-based replacement for select boxes. It supports searching,
-remote data sets, and pagination of results.
+**Usage**:
 
-To get started, checkout examples and documentation at
-https://select2.org/
+[Usage is the same as select2](https://select2.github.io/examples.html), but can also be initialized with `.selectWoo()`. `.select2()` initialization has been kept for full backwards compatibility. If other versions of select2 are potentially going to be running on the same site, initializing elements with `.selectWoo()` is recommended.
 
-Use cases
----------
-* Enhancing native selects with search.
-* Enhancing native selects with a better multi-select interface.
-* Loading data from JavaScript: easily load items via AJAX and have them
-  searchable.
-* Nesting optgroups: native selects only support one level of nesting. Select2
-  does not have this restriction.
-* Tagging: ability to add new items on the fly.
-* Working with large, remote datasets: ability to partially load a dataset based
-  on the search term.
-* Paging of large datasets: easy support for loading more pages when the results
-  are scrolled to the end.
-* Templating: support for custom rendering of results and selections.
+You can enqueue the select2 or the selectWoo js and css files in the dist folder. They are the same.
 
-Browser compatibility
----------------------
-* IE 8+
-* Chrome 8+
-* Firefox 10+
-* Safari 3+
-* Opera 10.6+
+## Additional features
 
-Select2 is automatically tested on the following browsers.
+In addition to the below, this fork of selectWoo contains various fixes to allow for a much improved screen reader experience.
 
-[![Sauce Labs Test Status][saucelabs-matrix]][saucelabs-status]
+### Label support
 
-Usage
------
-You can source Select2 directly from a CDN like [JSDliver][jsdelivr] or
-[CDNJS][cdnjs], [download it from this GitHub repo][releases], or use one of
-the integrations below.
+Unfortunately, select2 doesn't offer any way to assosiate a `label` element with a select2. However, you can get around this by adding `data-label="your label text"` to the original select element.
 
-Integrations
-------------
-Third party developers have created plugins for platforms which allow Select2 to be integrated more natively and quickly. For many platforms, additional plugins are not required because Select2 acts as a standard `<select>` box.
+```
+<label for="example-1">Pick your sauce</label>
+<select class="select2" id="example-1" name="example-1" data-label="Pick your sauce">
+    <option value="ketchup">Ketchup</option>
+    <option value="hot">Hot</option>
+    <option value="bbq">BBQ</option>
+</select>
+```
 
-Plugins
+This will add a `aria-label` with your label text to the select2.
 
-* [Django]
-  - [django-autocomplete-light]
-  - [django-easy-select2]
-  - [django-select2]
-* [Drupal] - [drupal-select2]
-* [Meteor] - [meteor-select2]
-* [Ruby on Rails][ruby-on-rails] - [select2-rails]
-* [Wicket] - [wicketstuff-select2]
-* [Yii 2][yii2] - [yii2-widget-select2]
-* [Angularjs][angularjs] - [mdr-angular-select2]
+### Help/error text support
 
-Themes
+`aria-describedby` attributes and values are copied over to the select2 element.
 
-- [Bootstrap 3][bootstrap3] - [select2-bootstrap-theme]
-- [Flat UI][flat-ui] - [select2-flat-theme]
-- [Metro UI][metro-ui] - [select2-metro]
+## Screen reader support
 
-Missing an integration? Modify this `README` and make a pull request back here to Select2 on GitHub.
+Due to the complex aria patterns used in select2, screen reader experiences may vary. See the table below for an overview of behaviour for some common screen reader and browser combinations.
 
-Internationalization (i18n)
----------------------------
-Select2 supports multiple languages by simply including the right language JS
-file (`dist/js/i18n/it.js`, `dist/js/i18n/nl.js`, etc.) after
-`dist/js/select2.js`.
+The following results are taken from the [testing playground page](https://github.com/jadu/selectWoo/blob/master/playground/index.html).
 
-Missing a language? Just copy `src/js/select2/i18n/en.js`, translate it, and
-make a pull request back to Select2 here on GitHub.
+### Single select
 
-Documentation
--------------
-The documentation for Select2 is available
-[through GitHub Pages][documentation] and is located within this repository
-in the [`docs` folder][documentation-folder].
+Typical screen reader output:
 
-Community
----------
-You can find out about the different ways to get in touch with the Select2
-community at the [Select2 community page][community].
+* VO: "`{selected choice | placeholder}`, menu popup combo box, `{label}`, group, `{describedby}`"
+* NVDA: "`{label}` grouping, `{selected choice | placeholder}` combobox collapsed, `{describedby}`"
+* JAWS: "`{label}` `{selected choice | placeholder}` edit, combobox collapsed, `{describedby}`"
 
-Copyright and license
----------------------
-The license is available within the repository in the [LICENSE][license] file.
+| Screen reader | OS     | Browser | Label read | Selection read | Options read | Describedby read |
+|---------------|--------|---------|------------|----------------|--------------|------------------|
+| Voiceover     | Mac OS | Safari  | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | Edge    | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 7  | IE11    | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 10 | Edge    | Yes        | Yes            | Yes          | No               |
+| JAWS 2020     | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 7  | IE11    | Yes        | Yes            | Yes          | Yes              |
 
-[cdnjs]: http://www.cdnjs.com/libraries/select2
-[community]: https://select2.org/getting-help
-[documentation]: https://select2.org
-[documentation-folder]: https://github.com/select2/select2/tree/master/docs
-[freenode]: https://freenode.net/
-[jsdelivr]: http://www.jsdelivr.com/#!select2
-[license]: LICENSE.md
-[releases]: https://github.com/select2/select2/releases
-[saucelabs-matrix]: https://saucelabs.com/browser-matrix/select2.svg
-[saucelabs-status]: https://saucelabs.com/u/select2
-[travis-ci-image]: https://img.shields.io/travis/select2/select2/master.svg
-[travis-ci-status]: https://travis-ci.org/select2/select2
+### Multi select
 
-[bootstrap3]: https://getbootstrap.com/
-[django]: https://www.djangoproject.com/
-[django-autocomplete-light]: https://github.com/yourlabs/django-autocomplete-light
-[django-easy-select2]: https://github.com/asyncee/django-easy-select2
-[django-select2]: https://github.com/applegrew/django-select2
-[drupal]: https://www.drupal.org/
-[drupal-select2]: https://www.drupal.org/project/select2
-[flat-ui]: http://designmodo.github.io/Flat-UI/
-[meteor]: https://www.meteor.com/
-[meteor-select2]: https://github.com/nate-strauser/meteor-select2
-[metro-ui]: http://metroui.org.ua/
-[select2-metro]: http://metroui.org.ua/select2.html
-[ruby-on-rails]: http://rubyonrails.org/
-[select2-bootstrap-theme]: https://github.com/select2/select2-bootstrap-theme
-[select2-flat-theme]: https://github.com/techhysahil/select2-Flat_Theme
-[select2-rails]: https://github.com/argerim/select2-rails
-[vue.js]: http://vuejs.org/
-[select2-vue]: http://vuejs.org/examples/select2.html
-[wicket]: https://wicket.apache.org/
-[wicketstuff-select2]: https://github.com/wicketstuff/core/tree/master/select2-parent
-[yii2]: http://www.yiiframework.com/
-[yii2-widget-select2]: https://github.com/kartik-v/yii2-widget-select2
-[angularjs]: https://angularjs.org/
-[mdr-angular-select2]: https://github.com/modulr/mdr-angular-select2
+Typical screen reader output:
+
+* VO: "`{label}`, edit text, `{selected choice | placeholder}`, `{describedby}`"
+* NVDA: "`{label}` edit, has autocomplete, `{selected choice | placeholder}`, `{describedby}`"
+* JAWS: "`{label}` edit, `{selected choice | placeholder}`, `{describedby}`"
+
+| Screen reader | OS     | Browser | Label read | Selection read | Options read | Describedby read |
+|---------------|--------|---------|------------|----------------|--------------|------------------|
+| Voiceover     | Mac OS | Safari  | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | Edge    | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | IE11    | Yes        | Yes            | Yes          | No               |
+| NVDA          | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
+| NVDA          | Win 7  | IE11    | Yes        | Yes            | Yes          | No               |
+| JAWS 2020     | Win 10 | Edge    | Yes        | No             | Yes          | No               |
+| JAWS 2020     | Win 10 | IE11    | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 10 | Firefox | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 10 | Chrome  | Yes        | Yes            | Yes          | Yes              |
+| JAWS 2020     | Win 7  | IE11    | Yes        | Yes            | Yes          | Yes              |
+
+## Known issues
+
+* Voiceover reads the the selection twice, once before the label and once after. It's caused by VO reading the `aria-label` on the `span.select2-selection` combobox and the text value of `span.select2-selection__rendered` textbox. Currently there is no way to prevent this as both values are required for maximum screen reader support.
+
+* IBM Equal Access Accessibility Checker reports a 4.1.2 Name, Role Value error relating to single selects having a `aria-expanded` value of `false` while the combobox popup is visible. This is due to the markup structure of single selects, where the parent "selection" controls the child "selection rendered" and the child is always visible (the selected option or placeholder). This appears to cause no issues in real world screen reader testing (see above tables).
+

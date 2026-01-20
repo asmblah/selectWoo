@@ -14,11 +14,15 @@
     {
       "name": "Alex Weissman",
       "url": "https://github.com/alexweissman"
+    },
+    {
+      "name": "Automattic",
+      "url": "https://github.com/woocommerce/selectWoo"
     }
   ],
   "repository": {
     "type": "git",
-    "url": "git://github.com/select2/select2.git"
+    "url": "git://github.com/woocommerce/selectWoo"
   },
   "bugs": {
     "url": "https://github.com/select2/select2/issues"
@@ -39,7 +43,7 @@
     "src",
     "dist"
   ],
-  "version": "4.0.6",
+  "version": "jadu-1.2.0",
   "jspm": {
     "main": "js/select2",
     "directories": {
@@ -47,20 +51,27 @@
     }
   },
   "devDependencies": {
-    "grunt": "^0.4.5",
+    "browser-sync": "^2.24.4",
+    "grunt": "^1.0.0",
+    "grunt-browser-sync": "^2.2.0",
     "grunt-cli": "^0.1.13",
-    "grunt-contrib-concat": "^0.4.0",
-    "grunt-contrib-connect": "^0.9.0",
-    "grunt-contrib-jshint": "^0.10.0",
-    "grunt-contrib-qunit": "~0.4.0",
-    "grunt-contrib-requirejs": "^0.4.4",
-    "grunt-contrib-uglify": "~0.4.0",
-    "grunt-contrib-watch": "~0.6.0",
-    "grunt-sass": "^1.0.0",
-    "node-sass": "^4.5.3"
+    "grunt-contrib-clean": "^1.0.0",
+    "grunt-contrib-concat": "^1.0.0",
+    "grunt-contrib-connect": "^1.0.0",
+    "grunt-contrib-jshint": "^1.0.0",
+    "grunt-contrib-qunit": "^2.0.0",
+    "grunt-contrib-requirejs": "^1.0.0",
+    "grunt-contrib-uglify": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-sass": "^4.0.1",
+    "sass": "^1.97.2"
   },
   "dependencies": {
     "almond": "~0.3.1",
     "jquery-mousewheel": "~3.1.13"
+  },
+  "scripts": {
+    "start": "browser-sync start --server 'playground' --ss 'dist' 'vendor'",
+    "test": "grunt test"
   }
 }

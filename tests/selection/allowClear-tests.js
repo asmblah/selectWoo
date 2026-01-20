@@ -107,6 +107,7 @@ test('clicking clear will set the placeholder value', function (assert) {
     allowClearOptions
   );
   var container = new MockContainer();
+  container.$element = $element;
 
   var $selection = selection.render();
 
@@ -138,6 +139,7 @@ test('clicking clear will trigger the unselect event', function (assert) {
     allowClearOptions
   );
   var container = new MockContainer();
+  container.$element = $element;
 
   var $selection = selection.render();
 
@@ -185,6 +187,7 @@ test('preventing the unselect event cancels the clearing', function (assert) {
     allowClearOptions
   );
   var container = new MockContainer();
+  container.$element = $element;
 
   var $selection = selection.render();
 
@@ -306,6 +309,7 @@ test('clear does not work when disabled', function (assert) {
     allowClearOptions
   );
   var container = new MockContainer();
+  container.$element = $element;
 
   var $selection = selection.render();
 

@@ -14,9 +14,7 @@ define([
 
   BaseSelection.prototype.render = function () {
     var $selection = $(
-      '<span class="select2-selection" role="combobox" ' +
-      ' aria-haspopup="true" aria-expanded="false">' +
-      '</span>'
+      '<span class="select2-selection"></span>'
     );
 
     this._tabindex = 0;
@@ -40,6 +38,7 @@ define([
 
     var id = container.id + '-container';
     var resultsId = container.id + '-results';
+    var searchHidden = this.options.get('minimumResultsForSearch') === Infinity;
 
     this.container = container;
 
@@ -59,19 +58,11 @@ define([
       }
     });
 
-    container.on('results:focus', function (params) {
-      self.$selection.attr('aria-activedescendant', params.data._resultId);
-    });
-
     container.on('selection:update', function (params) {
       self.update(params.data);
     });
 
     container.on('open', function () {
-      // When the dropdown is open, aria-expanded="true"
-      self.$selection.attr('aria-expanded', 'true');
-      self.$selection.attr('aria-owns', resultsId);
-
       self._attachCloseHandler(container);
     });
 
@@ -81,10 +72,12 @@ define([
       self.$selection.removeAttr('aria-activedescendant');
       self.$selection.removeAttr('aria-owns');
 
+      // This needs to be delayed as the active element is the body when the
+      // key is pressed.
       window.setTimeout(function () {
-        self.$selection.focus();
+        self.$selection.trigger('focus');
       }, 0);
-    
+
       self._detachCloseHandler(container);
     });
 
@@ -135,6 +128,14 @@ define([
         var $element = Utils.GetData(this, 'element');
 
         $element.select2('close');
+
+        // Remove any focus when dropdown is closed by
+        // clicking outside the select area. Timeout of
+        // 1 required for close to finish wrapping up.
+        setTimeout(function(){
+         $this.find('*:focus').trigger('blur');
+         $target.trigger('focus');
+        }, 1);
       });
     });
   };

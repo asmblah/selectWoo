@@ -22,50 +22,6 @@ test('title is carried over from original element', function (assert) {
   );
 });
 
-test('aria-expanded reflects the state of the container', function (assert) {
-  var $select = $('#qunit-fixture .single');
-
-  var selection = new BaseSelection($select, options);
-  var $selection = selection.render();
-
-  var container = new MockContainer();
-
-  selection.bind(container, $('<span></span>'));
-
-  assert.equal(
-    $selection.attr('aria-expanded'),
-    'false',
-    'The container should not be expanded when it is closed'
-  );
-
-  container.trigger('open');
-
-  assert.equal(
-    $selection.attr('aria-expanded'),
-    'true',
-    'The container should be expanded when it is opened'
-  );
-});
-
-test('static aria attributes are present', function (assert) {
-  var $select = $('#qunit-fixture .single');
-
-  var selection = new BaseSelection($select, options);
-  var $selection = selection.render();
-
-  assert.equal(
-    $selection.attr('role'),
-    'combobox',
-    'The container should identify as a combobox'
-  );
-
-  assert.equal(
-    $selection.attr('aria-haspopup'),
-    'true',
-    'The dropdown is considered a popup of the container'
-  );
-});
-
 test('the container should be in the tab order', function (assert) {
   var $select = $('#qunit-fixture .single');
 
@@ -130,25 +86,3 @@ test('a custom tabindex is copied', function (assert) {
     'The tab index should be restored when re-enabled'
   );
 });
-
-module('Accessibility - Single');
-
-test('aria-labelledby should match the rendered container', function (assert) {
-  var $select = $('#qunit-fixture .single');
-
-  var selection = new SingleSelection($select, options);
-  var $selection = selection.render();
-
-  var container = new MockContainer();
-  selection.bind(container, $('<span></span>'));
-
-  var $rendered = $selection.find('.select2-selection__rendered');
-
-  assert.equal(
-    $selection.attr('aria-labelledby'),
-    $rendered.attr('id'),
-    'The rendered selection should label the container'
-  );
-});
-
-module('Accessibility - Multiple');

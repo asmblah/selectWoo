@@ -31,12 +31,39 @@ define([
     SingleSelection.__super__.bind.apply(this, arguments);
 
     var id = container.id + '-container';
+    var label = this.options.get('label');
+    var placeholder = this.options.get('placeholder');
 
     this.$selection.find('.select2-selection__rendered')
       .attr('id', id)
       .attr('role', 'textbox')
       .attr('aria-readonly', 'true');
-    this.$selection.attr('aria-labelledby', id);
+
+    if (placeholder) {
+      // role="textbox" requires a text label
+      // not needed when placeholder absent as first option is selected
+      this.$selection.find('.select2-selection__rendered')
+        .attr('aria-label', placeholder);
+
+      if (label) {
+        // role=combobox requires a label
+        // we're adding the label and placeholder here
+        // so they both get announced
+        this.$selection.attr('aria-label', label + ', ' + placeholder);
+      }
+    }
+
+    // If element is disabled,
+    // add aria-disabled to rendered element for screen readers
+    if (this.$element.attr('disabled')) {
+      this.$selection.find('.select2-selection__rendered')
+        .attr('aria-disabled', 'true');
+    }
+
+    this.$selection.attr('role', 'combobox');
+    this.$selection.attr('aria-controls', id);
+    this.$selection.attr('aria-owns', id);
+    this.$selection.attr('aria-expanded', 'false');
 
     this.$selection.on('mousedown', function (evt) {
       // Only respond to left clicks
@@ -53,14 +80,38 @@ define([
       // User focuses on the container
     });
 
+    this.$selection.on('keydown', function (evt) {
+      // If user starts typing an alphanumeric key on the keyboard,
+      // open if not opened.
+      if (!container.isOpen() && evt.which >= 48 && evt.which <= 90) {
+        container.open();
+      }
+    });
+
     this.$selection.on('blur', function (evt) {
       // User exits the container
     });
 
+    container.on('open', function () {
+      // When the dropdown is open, aria-expanded="true"
+      self.$selection.attr('aria-expanded', 'true');
+    });
+
+    container.on('close', function () {
+      // When the dropdown is open, aria-expanded="false"
+      self.$selection.attr('aria-expanded', 'false');
+
+      self.$selection.removeAttr('aria-activedescendant');
+    });
+
     container.on('focus', function (evt) {
       if (!container.isOpen()) {
-        self.$selection.focus();
+        self.$selection.trigger('focus');
       }
+    });
+
+    container.on('results:focus', function (params) {
+      self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
   };
 
@@ -93,7 +144,23 @@ define([
     var formatted = this.display(selection, $rendered);
 
     $rendered.empty().append(formatted);
-    $rendered.attr('title', selection.title || selection.text);
+
+    // Update aria-label with selected option (role="textbox" requires a label)
+    $rendered.attr('aria-label', selection.title || selection.text);
+
+    var label = this.options.get('label');
+    var selectedValueText = selection.title || selection.text;
+    var placeholder = this.options.get('placeholder');
+
+    // selection has role="combobox" and therefore requires a label
+    // but adding just the label results in only the label being read
+    // and not the selection/placeholder (in JAWS & NVDA)
+    // so we add the label and the selection/placeholder
+    if (label) {
+      this.$selection.attr('aria-label', label + ', ' + selectedValueText);
+    } else {
+      this.$selection.attr('aria-label', selectedValueText);
+    }
   };
 
   return SingleSelection;

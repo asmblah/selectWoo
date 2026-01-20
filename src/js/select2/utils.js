@@ -272,6 +272,14 @@ define([
     $element.append($nodes);
   };
 
+  // Determine whether the browser is on a touchscreen device.
+  Utils.isTouchscreen = function() {
+    if ('undefined' === typeof Utils._isTouchscreenCache) {
+      Utils._isTouchscreenCache = 'ontouchstart' in document.documentElement;
+    }
+    return Utils._isTouchscreenCache;
+  };
+
   // Cache objects in Utils.__cache instead of $.data (see #4346)
   Utils.__cache = {};
 

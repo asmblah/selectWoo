@@ -13,9 +13,11 @@ define([
     var $selection = MultipleSelection.__super__.render.call(this);
 
     $selection.addClass('select2-selection--multiple');
-
     $selection.html(
-      '<ul class="select2-selection__rendered"></ul>'
+      '<ul class="select2-selection__rendered" ' +
+      'aria-live="polite" ' +
+      'aria-relevant="additions removals" ' +
+      'aria-atomic="true"></ul>'
     );
 
     return $selection;
@@ -52,6 +54,20 @@ define([
         });
       }
     );
+
+    this.$selection.on('keydown', function (evt) {
+      // If user starts typing an alphanumeric key on the keyboard,
+      // open if not opened.
+      if (!container.isOpen() && evt.which >= 48 && evt.which <= 90) {
+        container.open();
+      }
+    });
+
+    // Focus on the search field when the container
+    // is focused instead of the main container.
+    container.on( 'focus', function(){
+      self.focusOnSearch();
+    });
   };
 
   MultipleSelection.prototype.clear = function () {
@@ -70,13 +86,33 @@ define([
   MultipleSelection.prototype.selectionContainer = function () {
     var $container = $(
       '<li class="select2-selection__choice">' +
-        '<span class="select2-selection__choice__remove" role="presentation">' +
+        '<span class="select2-selection__choice__remove" ' +
+        'role="presentation" ' +
+        'aria-hidden="true">' +
           '&times;' +
         '</span>' +
       '</li>'
     );
 
     return $container;
+  };
+
+  /**
+   * Focus on the search field instead of the main multiselect container.
+   */
+  MultipleSelection.prototype.focusOnSearch = function() {
+    var self = this;
+
+    if ('undefined' !== typeof self.$search) {
+      // Needs 1 ms delay because of other 1 ms setTimeouts when rendering.
+      setTimeout(function(){
+        // Prevent the dropdown opening again when focused from this.
+        // This gets reset automatically when focus is triggered.
+        self._keyUpPrevented = true;
+
+        self.$search.trigger('focus');
+      }, 1);
+    }
   };
 
   MultipleSelection.prototype.update = function (data) {
@@ -93,6 +129,9 @@ define([
 
       var $selection = this.selectionContainer();
       var formatted = this.display(selection, $selection);
+      if ('string' === typeof formatted) {
+        formatted = formatted.trim();
+      }
 
       $selection.append(formatted);
       $selection.attr('title', selection.title || selection.text);
