@@ -59,11 +59,12 @@
     "grunt-contrib-concat": "^1.0.0",
     "grunt-contrib-connect": "^1.0.0",
     "grunt-contrib-jshint": "^1.0.0",
-    "grunt-contrib-qunit": "^2.0.0",
+    "grunt-contrib-qunit": "^3.0.0",
     "grunt-contrib-requirejs": "^1.0.0",
     "grunt-contrib-uglify": "^1.0.0",
     "grunt-contrib-watch": "^1.0.0",
     "grunt-sass": "^4.0.1",
+    "qunit": "^2.10.0",
     "sass": "^1.97.2"
   },
   "dependencies": {

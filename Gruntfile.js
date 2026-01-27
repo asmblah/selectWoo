@@ -156,9 +156,10 @@ module.exports = function (grunt) {
       all: {
         options: {
           urls: testUrls,
-          // overriding this as we are manually adding the QUnit PhantomJS bridge
-          // to ensure it is added at the right point
-          inject: null
+
+          // Overriding this as we are manually adding the QUnit Chrome bridge
+          // to ensure it is added at the right point.
+          inject: []
         }
       }
     },

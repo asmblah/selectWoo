@@ -1,5 +1,5 @@
 /*!
- * SelectWoo (JADU) jadu-1.2.0
+ * SelectWoo (JADU) 4.1.0+select2-4.0.6
  * https://github.com/woocommerce/selectWoo
  *
  * Released under the MIT license
@@ -1498,11 +1498,7 @@ S2.define('select2/selection/base',[
       self.$selection.removeAttr('aria-activedescendant');
       self.$selection.removeAttr('aria-owns');
 
-      // This needs to be delayed as the active element is the body when the
-      // key is pressed.
-      window.setTimeout(function () {
-        self.$selection.trigger('focus');
-      }, 0);
+      self.$selection.trigger('focus');
 
       self._detachCloseHandler(container);
     });
