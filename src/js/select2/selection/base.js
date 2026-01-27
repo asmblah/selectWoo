@@ -19,8 +19,8 @@ define([
 
     this._tabindex = 0;
 
-    if (this.$element.data('old-tabindex') != null) {
-      this._tabindex = this.$element.data('old-tabindex');
+    if (Utils.GetData(this.$element[0], 'old-tabindex') != null) {
+      this._tabindex = Utils.GetData(this.$element[0], 'old-tabindex');
     } else if (this.$element.attr('tabindex') != null) {
       this._tabindex = this.$element.attr('tabindex');
     }
@@ -67,11 +67,12 @@ define([
     });
 
     container.on('close', function () {
-      // This needs to be delayed as the active element is the body when the
-      // key is pressed.
-      window.setTimeout(function () {
-        self.$selection.trigger('focus');
-      }, 1);
+      // When the dropdown is closed, aria-expanded="false"
+      self.$selection.attr('aria-expanded', 'false');
+      self.$selection.removeAttr('aria-activedescendant');
+      self.$selection.removeAttr('aria-owns');
+
+      self.$selection.trigger('focus');
 
       self._detachCloseHandler(container);
     });
@@ -120,7 +121,8 @@ define([
           return;
         }
 
-        var $element = $this.data('element');
+        var $element = Utils.GetData(this, 'element');
+
         $element.select2('close');
 
         // Remove any focus when dropdown is closed by

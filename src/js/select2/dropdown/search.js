@@ -72,6 +72,7 @@ define([
       self.$search.removeAttr('aria-controls');
       self.$search.removeAttr('aria-activedescendant');
       self.$search.val('');
+      self.$search.blur();
     });
 
     container.on('focus', function () {

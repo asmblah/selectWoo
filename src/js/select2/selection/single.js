@@ -55,7 +55,7 @@ define([
 
     // If element is disabled,
     // add aria-disabled to rendered element for screen readers
-    if (this.container.$element.attr('disabled')) {
+    if (this.$element.attr('disabled')) {
       this.$selection.find('.select2-selection__rendered')
         .attr('aria-disabled', 'true');
     }
@@ -113,14 +113,12 @@ define([
     container.on('results:focus', function (params) {
       self.$selection.attr('aria-activedescendant', params.data._resultId);
     });
-
-    container.on('selection:update', function (params) {
-      self.update(params.data);
-    });
   };
 
   SingleSelection.prototype.clear = function () {
-    this.$selection.find('.select2-selection__rendered').empty();
+    var $rendered = this.$selection.find('.select2-selection__rendered');
+    $rendered.empty();
+    $rendered.removeAttr('title'); // clear tooltip on empty
   };
 
   SingleSelection.prototype.display = function (data, container) {
