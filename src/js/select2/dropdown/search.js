@@ -6,12 +6,22 @@ define([
 
   Search.prototype.render = function (decorated) {
     var $rendered = decorated.call(this);
+    var label = this.options.get('label');
+    var ariaLabelAttr = '';
+
+    // If a label is passed via options,
+    // set aria label on the dropdown search
+    // role="combobox" must have an accessible name
+    if (label) {
+      ariaLabelAttr = 'aria-label ="' + label + '"';
+    }
 
     var $search = $(
       '<span class="select2-search select2-search--dropdown">' +
-        '<input class="select2-search__field" type="search" tabindex="-1"' +
-        ' autocomplete="off" autocorrect="off" autocapitalize="none"' +
-        ' spellcheck="false" role="textbox" />' +
+        '<input class="select2-search__field" type="text" tabindex="-1"' +
+        ' autocomplete="off" autocorrect="off" autocapitalize="off"' +
+        ' spellcheck="false" role="combobox" aria-autocomplete="list" ' +
+        'aria-expanded="true" ' + ariaLabelAttr + '/>' +
       '</span>'
     );
 
@@ -25,6 +35,7 @@ define([
 
   Search.prototype.bind = function (decorated, container, $container) {
     var self = this;
+    var resultsId = container.id + '-results';
 
     decorated.call(this, container, $container);
 
@@ -48,24 +59,25 @@ define([
 
     container.on('open', function () {
       self.$search.attr('tabindex', 0);
-
-      self.$search.focus();
+      self.$search.attr('aria-controls', resultsId);
+      self.$search.trigger('focus');
 
       window.setTimeout(function () {
-        self.$search.focus();
+        self.$search.trigger('focus');
       }, 0);
     });
 
     container.on('close', function () {
       self.$search.attr('tabindex', -1);
-
+      self.$search.removeAttr('aria-controls');
+      self.$search.removeAttr('aria-activedescendant');
       self.$search.val('');
       self.$search.blur();
     });
 
     container.on('focus', function () {
-      if (!container.isOpen()) {
-        self.$search.focus();
+      if (container.isOpen()) {
+        self.$search.trigger('focus');
       }
     });
 
@@ -79,6 +91,10 @@ define([
           self.$searchContainer.addClass('select2-search--hide');
         }
       }
+    });
+
+    container.on('results:focus', function (params) {
+      self.$search.attr('aria-activedescendant', params.data._resultId);
     });
   };
 
